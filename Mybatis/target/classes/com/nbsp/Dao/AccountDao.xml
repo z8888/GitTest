@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.nbsp.Dao.AccountDao" >
+
+    <resultMap id="resultmap" type="com.nbsp.domain.Account">
+    <id property="id" column="id"></id>
+     <result property="name" column="name"></result>
+     <result property="money" column="money"></result>
+    </resultMap>
+
+    <resultMap id="accountUser" type="com.nbsp.domain.AccountUser">
+        <id column="ID" property="id"></id>
+        <result column="MONEY" property="money"></result>
+        <association property="user" javaType="com.nbsp.domain.User">
+            <id column="id" property="id"></id>
+            <result column="username" property="name"></result>
+            <result column="birthday" property="birthday"></result>
+            <result column="sex" property="sex"></result>
+            <result column="address" property="address"></result>
+        </association>
+    </resultMap>
+
+    <!-- 配置查询所有操作 -->
+    <select id="FindAll" resultMap="resultmap">
+        select * from account
+    </select>
+
+    <select id="FindById" resultMap="resultmap" parameterType="int">
+        select * from account where id=#{id}
+    </select>
+
+    <select id="DeleteAccountByid"  parameterType="int">
+       delete from account where id=#{id}
+    </select>
+
+    <!--<insert id="insertAccounts">
+
+    </insert>-->
+    <update id="insert" parameterType="com.nbsp.domain.Account">
+        insert into account (NAME ,money) value(#{name},#{money})
+        <!--insert into account (NAME ,money) value
+        <foreach collection="list" open="" close="" item="id" separator=",">
+            (#{id.name},#{id.money})
+        </foreach>-->
+    </update>
+
+   <!-- <select id="FindAccountUser" resultType="com.nbsp.domain.AccountUser">
+        SELECT acc.*, u.`username`, u.`address` FROM account acc,USER u WHERE acc.`UID`=u.`id`
+    </select>-->
+
+    <select id="FindAccountUser" resultMap="accountUser">
+        SELECT
+           acc.ID, acc.`MONEY`, u.*
+        FROM
+           account acc,USER u
+        WHERE
+           acc.`UID`=u.`id`
+    </select>
+
+</mapper>
